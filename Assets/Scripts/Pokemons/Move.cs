@@ -2,17 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Move : MonoBehaviour
+public class Move
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public MoveBase Base { get; set; }
+    public int PP { get; set; }
 
-    // Update is called once per frame
-    void Update()
+    public Move(MoveBase pbase)
     {
-        
+        Base = pbase;
+        PP = pbase.Pp;
     }
 }

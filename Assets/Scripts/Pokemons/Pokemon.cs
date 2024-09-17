@@ -4,42 +4,101 @@ using UnityEngine;
 
 public class Pokemon
 {
-    PokemonBase _base;
-    int level;
+    public PokemonBase Base { get; set; }
+    public int Level { get; set; }
+
+    public int HP {  get; set; }
+
+    public List<Move> Moves {  get; set; }
 
     public Pokemon(PokemonBase pBase, int pLevel)
     {
-        _base = pBase;
-        level = pLevel;
+        Base = pBase;
+        Level = pLevel;
+        HP = MaxHP;
+
+        Moves = new List<Move>();
+        foreach (LearnableMove move in Base.LearnableMoves)
+        {
+            if (move.Level <= Level)
+                Moves.Add(new Move(move.Base));
+
+            if(Moves.Count >= 4)
+                break;
+        }
     }
 
     public int Attack
     {
-        get { return Mathf.FloorToInt((_base.Attack * level) / 100f) + 5; }
+        get { return Mathf.FloorToInt((Base.Attack * Level) / 100f) + 5; }
     }
 
     public int Defense
     {
-        get { return Mathf.FloorToInt((_base.Defense * level) / 100f) + 5; }
+        get { return Mathf.FloorToInt((Base.Defense * Level) / 100f) + 5; }
     }
 
     public int SpAttack
     {
-        get { return Mathf.FloorToInt((_base.SpAttack * level) / 100f) + 5; }
+        get { return Mathf.FloorToInt((Base.SpAttack * Level) / 100f) + 5; }
     }
 
     public int SpDefense
     {
-        get { return Mathf.FloorToInt((_base.SpDefense * level) / 100f) + 5; }
+        get { return Mathf.FloorToInt((Base.SpDefense * Level) / 100f) + 5; }
     }
 
     public int Speed
     {
-        get { return Mathf.FloorToInt((_base.Speed * level) / 100f) + 5; }
+        get { return Mathf.FloorToInt((Base.Speed * Level) / 100f) + 5; }
     }
 
     public int MaxHP
     {
-        get { return Mathf.FloorToInt((_base.MaxHP * level) / 100f) + 10; }
+        get { return Mathf.FloorToInt((Base.MaxHP * Level) / 100f) + 10; }
     }
+
+    public DamageDetails TakeDamage(Move move, Pokemon attacker)
+    {
+        float critical = 1f;
+        if (Random.value * 100f <= 6.25)
+            critical = 2f;
+
+        float type = TypeChart.GetEffectiveness(move.Base.Type, Base.Type1) * TypeChart.GetEffectiveness(move.Base.Type, Base.Type2);
+
+        var damageDetails = new DamageDetails()
+        {
+            TypeEffectiveness = type,
+            Critical = critical,
+            Fainted = false
+        };
+
+        float modifiers = Random.Range(0.85f, 1f) * type * critical;
+        float a = (2 * attacker.Level + 10) / 250f;
+        float d = a * move.Base.Power * ((float)attacker.Attack / Defense) + 2;
+        int damage = Mathf.FloorToInt(d * modifiers);
+
+        HP -= damage;
+        if(HP <= 0)
+        {
+            HP = 0;
+            damageDetails.Fainted = true;
+        }
+
+        return damageDetails;
+    }
+
+    public Move GetRandomMove()
+    {
+        int r = Random.Range(0, Moves.Count);
+        return Moves[r];
+    }
+}
+
+public class DamageDetails
+{
+    public bool Fainted { get; set; }
+    public float Critical { get; set; }
+    public float TypeEffectiveness { get; set; }
+
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 public class MoveBase : ScriptableObject
 {
     [SerializeField] string name;
+
     [TextArea]
     [SerializeField ] string description;
 
