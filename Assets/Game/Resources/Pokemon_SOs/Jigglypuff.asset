@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f45e43633af6a5468143a67b5e9d682, type: 3}
-  m_Name: Pikachu
+  m_Name: Jigglypuff
   m_EditorClassIdentifier: 
-  name: Pikachu
+  name: Jigglypuff
   description: 
-  frontSprite: {fileID: 21300000, guid: 4c60b4c0b0b3da14ebcbd9ad364a85c6, type: 3}
-  backSprite: {fileID: 21300000, guid: 4d4b3a8d223c6624aac735f7dde7b018, type: 3}
-  type1: 4
-  type2: 0
-  maxHP: 35
-  attack: 55
-  defense: 30
-  spAttack: 50
-  spDefense: 40
-  speed: 90
+  frontSprite: {fileID: 21300000, guid: a5f9c479f84272941be68afab7dd7726, type: 3}
+  backSprite: {fileID: 21300000, guid: b1004d3cf64b41642a4985c270bf8ea5, type: 3}
+  type1: 1
+  type2: 18
+  maxHP: 115
+  attack: 45
+  defense: 20
+  spAttack: 45
+  spDefense: 25
+  speed: 20
   learnableMoves:
-  - moveBase: {fileID: 11400000, guid: e76aa4579ffcc044b8cea261688a96c1, type: 2}
-    level: 1
   - moveBase: {fileID: 11400000, guid: f39d50b6d21ce6c46a73385afc164784, type: 2}
     level: 1
-  - moveBase: {fileID: 11400000, guid: 208d85deb9d5616439f99f732b0d9ffd, type: 2}
+  - moveBase: {fileID: 11400000, guid: e76aa4579ffcc044b8cea261688a96c1, type: 2}
+    level: 1
+  - moveBase: {fileID: 11400000, guid: 4c434d8744453414bbc01fd02f23743f, type: 2}
     level: 10
