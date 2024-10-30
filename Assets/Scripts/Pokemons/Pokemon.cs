@@ -30,7 +30,9 @@ public class Pokemon
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> StatBoosts { get; private set; }
     public Condition Status { get; private set; }
+    public Condition VolatileStatus { get; private set; }
     public int StatusTime { get; set; }
+    public int VolatileStatusTime { get; set; }
     public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
     public bool HPChanged { get; set; }
     public event System.Action OnStatusChanged;
@@ -52,6 +54,8 @@ public class Pokemon
         HP = MaxHP;
 
         ResetStatBoost();
+        Status = null;
+        VolatileStatus = null;
     }
 
     private void CalculateStats()
@@ -188,11 +192,25 @@ public class Pokemon
         StatusChanges.Enqueue($"{Base.Name} {Status.StartMessage}");
         OnStatusChanged?.Invoke();
     }
+    
+    public void SetVolatileStatus(ConditionID conditionId)
+    {
+        if (VolatileStatus != null) return;
+
+        VolatileStatus = ConditionsDB.Condtions[conditionId];
+        VolatileStatus?.OnStart?.Invoke(this);
+        StatusChanges.Enqueue($"{Base.Name} {VolatileStatus.StartMessage}");
+    }
 
     public void CureStatus()
     {
         Status = null;
         OnStatusChanged?.Invoke();
+    }
+
+    public void CureVolatileStatus()
+    {
+        VolatileStatus = null;
     }
 
     public Move GetRandomMove()
@@ -203,21 +221,32 @@ public class Pokemon
 
     public bool OnBeforeMove()
     {
+        bool canPerformMove = true;
+
         if(Status?.OnBeforeMove != null)
         {
-            return Status.OnBeforeMove(this);
+            if(!Status.OnBeforeMove(this))
+                canPerformMove = false;
         }
 
-        return true;
+        if(VolatileStatus?.OnBeforeMove != null)
+        {
+            if(!VolatileStatus.OnBeforeMove(this))
+                canPerformMove = false;
+        }
+
+        return canPerformMove;
     }
 
     public void OnAfterTurn()
     {
         Status?.OnAfterTurn?.Invoke(this);
+        VolatileStatus?.OnAfterTurn?.Invoke(this);
     }
 
     public void OnBattleOver()
     {
+        VolatileStatus = null;
         ResetStatBoost();
     }
 }

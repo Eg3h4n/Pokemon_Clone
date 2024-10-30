@@ -115,13 +115,14 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator RunMove(BattleUnit sourceUnit, BattleUnit targetUnit, Move move)
     {
         bool canRunMove = sourceUnit.Pokemon.OnBeforeMove();
-        yield return ShowStatusChanges(sourceUnit.Pokemon);
         if (!canRunMove)
         {
+            yield return ShowStatusChanges(sourceUnit.Pokemon);
+            yield return sourceUnit.Hud.UpdateHP();
             yield break;    
         }
 
-        //yield return ShowStatusChanges(sourceUnit.Pokemon);
+        yield return ShowStatusChanges(sourceUnit.Pokemon);
 
         move.PP--;
 
@@ -187,6 +188,12 @@ public class BattleSystem : MonoBehaviour
         if(effects.Status != ConditionID.none)
         {
             target.SetStatus(effects.Status);
+        }
+
+        // Volatile Status Effects are applied here
+        if (effects.VolatileStatus != ConditionID.none)
+        {
+            target.SetVolatileStatus(effects.VolatileStatus);
         }
 
         yield return ShowStatusChanges(source);
