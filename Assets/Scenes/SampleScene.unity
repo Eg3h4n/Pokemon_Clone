@@ -1488,8 +1488,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: ba6cefa813be59f47a47a707944085c8, type: 2}
-    level: 10
+  - _base: {fileID: 11400000, guid: aa6efbf08c57a3f4db1d67ec9ea78c1d, type: 2}
+    level: 13
   - _base: {fileID: 11400000, guid: c516aad8ef438d24b96889ca21d40179, type: 2}
     level: 3
   - _base: {fileID: 11400000, guid: c516aad8ef438d24b96889ca21d40179, type: 2}
@@ -10182,10 +10182,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: 8e60efa07f59b234da4dff59f523cd4a, type: 2}
-    level: 8
-  - _base: {fileID: 11400000, guid: c516aad8ef438d24b96889ca21d40179, type: 2}
-    level: 7
+  - _base: {fileID: 11400000, guid: f4b67b5912efba44382c9e1b4caf752e, type: 2}
+    level: 13
+  - _base: {fileID: 11400000, guid: f4b67b5912efba44382c9e1b4caf752e, type: 2}
+    level: 13
 --- !u!1 &1561840458
 GameObject:
   m_ObjectHideFlags: 0

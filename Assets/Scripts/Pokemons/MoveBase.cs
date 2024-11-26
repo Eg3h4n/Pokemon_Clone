@@ -16,6 +16,7 @@ public class MoveBase : ScriptableObject
     [SerializeField] int accuracy;
     [SerializeField] bool alwaysHits;
     [SerializeField] int pp;
+    [SerializeField] int priority;
     [SerializeField] MoveCategory category;
     [SerializeField] MoveEffects effects;
     [SerializeField] List<SecondaryEffects> secondaryEffects;
@@ -54,6 +55,11 @@ public class MoveBase : ScriptableObject
     public int Pp
     {
         get { return pp; }
+    }
+
+    public int Priority
+    {
+        get { return priority; }
     }
 
     public MoveCategory Category
