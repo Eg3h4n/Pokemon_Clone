@@ -6,8 +6,8 @@ using DG.Tweening;
 
 public class BattleUnit : MonoBehaviour
 {
-    [SerializeField] bool isPlayerUnit;
-    [SerializeField] BattleHud hud;
+    [SerializeField] private bool isPlayerUnit;
+    [SerializeField] private BattleHud hud;
 
     public bool IsPlayerUnit
     {
