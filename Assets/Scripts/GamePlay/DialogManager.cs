@@ -25,12 +25,16 @@ public class DialogManager : MonoBehaviour
     private Dialog _dialog;
     private int _currentLine = 0;
     private bool _isTyping;
+    
+    public bool IsInDialog {get; private set;}
 
     public IEnumerator ShowDialog(Dialog dialog)
     {
         yield return new WaitForEndOfFrame(); // we wait because the first interaction is already pressing Z key
         
         OnShowDialog?.Invoke();
+        
+        IsInDialog = true;
         _dialog = dialog;
         dialogBox.SetActive(true);
         
@@ -50,6 +54,7 @@ public class DialogManager : MonoBehaviour
         else
         {
             _currentLine = 0;
+            IsInDialog = false;
             dialogBox.SetActive(false);
             OnHideDialog?.Invoke();
         }

@@ -381,6 +381,7 @@ GameObject:
   - component: {fileID: 291618719}
   - component: {fileID: 291618718}
   - component: {fileID: 291618720}
+  - component: {fileID: 291618721}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -433,6 +434,27 @@ MonoBehaviour:
   dialogBox: {fileID: 970827122}
   dialogText: {fileID: 2026280224}
   lettersPerSecond: 45
+--- !u!114 &291618721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 291618717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31904dac948e4404a82e9be0c30f5658, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  solidObjectsLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  interactablesLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  grassLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1001 &466115204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1554,6 +1576,7 @@ GameObject:
   - component: {fileID: 1048865657}
   - component: {fileID: 1048865659}
   - component: {fileID: 1048865660}
+  - component: {fileID: 1048865661}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1641,16 +1664,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdb3c315f1607f64f8b492b0bccebde3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 5
-  solidObjectsLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  interactablesLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  grassLayer:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!114 &1048865659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1706,6 +1719,19 @@ MonoBehaviour:
   - {fileID: 2690600881683387669, guid: 3111f23cd57d2be48b2ee6bac4a23588, type: 3}
   - {fileID: 6634202828824015816, guid: 3111f23cd57d2be48b2ee6bac4a23588, type: 3}
   - {fileID: -5008138227279614530, guid: 3111f23cd57d2be48b2ee6bac4a23588, type: 3}
+--- !u!114 &1048865661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048865654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e08c032d1bef4046a8a912cad844a9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 5
 --- !u!1 &1144430968
 GameObject:
   m_ObjectHideFlags: 0
@@ -1719,6 +1745,8 @@ GameObject:
   - component: {fileID: 1144430972}
   - component: {fileID: 1144430971}
   - component: {fileID: 1144430973}
+  - component: {fileID: 1144430974}
+  - component: {fileID: 1144430975}
   m_Layer: 10
   m_Name: NPC
   m_TagString: Untagged
@@ -1881,6 +1909,57 @@ MonoBehaviour:
     lines:
     - hello I am the first npc around here
     - the houses are placeholders, I checked
+  movementPattern:
+  - {x: 2, y: 0}
+  - {x: 0, y: -2}
+  - {x: -2, y: 0}
+  - {x: 0, y: 2}
+  timeBetweenMovements: 3
+--- !u!114 &1144430974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144430968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e08c032d1bef4046a8a912cad844a9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 5
+--- !u!114 &1144430975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144430968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bcb26ccdcee7e4aa4a60bc34ee3d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkDownSprites:
+  - {fileID: -633503182, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 1302527344, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 2119167541, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: -1586388330, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  walkUpSprites:
+  - {fileID: 294269570, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 577667162, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: -1491275068, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 1767235187, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  walkRightSprites:
+  - {fileID: 1498296664, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: -1852797493, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: -826921686, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 1509863298, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  walkLeftSprites:
+  - {fileID: -1018004720, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 1613680091, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: 297179369, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
+  - {fileID: -1386002940, guid: 8326327e5c188cf4e91e93c28fee48eb, type: 3}
 --- !u!1 &1201142784
 GameObject:
   m_ObjectHideFlags: 0
@@ -2463,7 +2542,7 @@ Transform:
   m_GameObject: {fileID: 1479190586}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.02, y: 0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

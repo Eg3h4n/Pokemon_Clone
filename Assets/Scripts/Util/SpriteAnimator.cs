@@ -34,7 +34,7 @@ public class SpriteAnimator
         timer += Time.deltaTime;
         if (timer > frameRate)
         {
-            currentFrame = (currentFrame + 1) % frames.Count;
+            currentFrame = (currentFrame + 1) % frames.Count; // to make it into a loop when the index is higher than count
             spriteRenderer.sprite = frames[currentFrame];
             timer-= frameRate;
         }
