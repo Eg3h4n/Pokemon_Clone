@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
         if (collider != null)
         {
-            collider.GetComponent<IInteractable>()?.Interact();
+            collider.GetComponent<IInteractable>()?.Interact(transform);
         }
     }
     

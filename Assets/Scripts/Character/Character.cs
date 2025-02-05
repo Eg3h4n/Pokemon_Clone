@@ -29,7 +29,7 @@ public class Character : MonoBehaviour
         targetPos.x += moveVector.x;
         targetPos.y += moveVector.y;
         
-        if(!IsWalkable(targetPos))
+        if(!IsPathClear(targetPos))
             yield break;
         
         IsMoving = true;
@@ -50,9 +50,32 @@ public class Character : MonoBehaviour
     {
         animator.IsMoving = IsMoving;
     }
+
+    private bool IsPathClear(Vector3 targetPos)
+    {
+        var diff = targetPos - transform.position;
+        var dir = diff.normalized;
+        return !Physics2D.BoxCast(transform.position + dir, new Vector2(0.2f, 0.2f), 0f, dir, diff.magnitude - 1, GameLayers.Instance.SolidObjectsLayer | GameLayers.Instance.InteractablesLayer | GameLayers.Instance.PlayerLayer);
+    }
     
     private bool IsWalkable(Vector3 targetPos)
     {
         return Physics2D.OverlapCircle(targetPos, 0.2f, GameLayers.Instance.SolidObjectsLayer | GameLayers.Instance.InteractablesLayer) == null;
+    }
+
+    public void LookTowards(Vector3 targetPos)
+    {
+        var xDiff = Mathf.Floor(targetPos.x) - Mathf.Floor(transform.position.x);
+        var yDiff = Mathf.Floor(targetPos.y) - Mathf.Floor(transform.position.y);
+
+        if (xDiff == 0 || yDiff == 0)
+        {
+            animator.MoveX = Mathf.Clamp(xDiff, -1.0f, 1.0f);
+            animator.MoveY = Mathf.Clamp(yDiff, -1.0f, 1.0f);
+        }
+        else
+        {
+            Debug.Log("error in look towards: x or y difference is not 0");
+        }
     }
 }

@@ -25,10 +25,11 @@ public class DialogManager : MonoBehaviour
     private Dialog _dialog;
     private int _currentLine = 0;
     private bool _isTyping;
+    Action OnDialogEnd;
     
     public bool IsInDialog {get; private set;}
 
-    public IEnumerator ShowDialog(Dialog dialog)
+    public IEnumerator ShowDialog(Dialog dialog, Action onFinish = null)
     {
         yield return new WaitForEndOfFrame(); // we wait because the first interaction is already pressing Z key
         
@@ -36,6 +37,7 @@ public class DialogManager : MonoBehaviour
         
         IsInDialog = true;
         _dialog = dialog;
+        OnDialogEnd = onFinish;
         dialogBox.SetActive(true);
         
         yield return TypeDialog(dialog.Lines[0]);
@@ -57,6 +59,7 @@ public class DialogManager : MonoBehaviour
             IsInDialog = false;
             dialogBox.SetActive(false);
             OnHideDialog?.Invoke();
+            OnDialogEnd?.Invoke();
         }
     }
     
