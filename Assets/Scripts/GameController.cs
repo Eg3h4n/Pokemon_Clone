@@ -6,7 +6,8 @@ public enum GameState
 {
     FreeRoam,
     Battle,
-    Dialog
+    Dialog,
+    Cutscene
 }
 
 public class GameController : MonoBehaviour
@@ -26,9 +27,21 @@ public class GameController : MonoBehaviour
     {
         playerController.OnEncountered += StartBattle;
         battleSystem.OnBattleOver += EndBattle;
+
+        playerController.OnEnterTrainersFoV += StartTrainerEncounter;
         
         DialogManager.Instance.OnShowDialog += StartDialog;
         DialogManager.Instance.OnHideDialog += EndDialog;
+    }
+
+    private void StartTrainerEncounter(Collider2D trainerCollider)
+    {
+        var trainer = trainerCollider.GetComponentInParent<TrainerController>();
+        if (trainer != null)
+        {
+            state = GameState.Cutscene;
+            StartCoroutine(trainer.TriggerTrainerBattle(playerController));
+        }
     }
 
     private void StartBattle()
