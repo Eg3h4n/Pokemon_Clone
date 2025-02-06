@@ -1,35 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public class BattleUnit : MonoBehaviour
 {
     [SerializeField] private bool isPlayerUnit;
     [SerializeField] private BattleHud hud;
 
-    public bool IsPlayerUnit
-    {
-        get
-        {
-            return isPlayerUnit;
-        }
-    }
+    private Image image;
+    private Color originalColor;
+    private Vector3 originalPos;
 
-    public BattleHud Hud
-    {
-        get
-        {
-            return hud;
-        }
-    }
+    public bool IsPlayerUnit => isPlayerUnit;
 
-    public Pokemon Pokemon {  get; set; }
+    public BattleHud Hud => hud;
 
-    Image image;
-    Vector3 originalPos;
-    Color originalColor;
+    public Pokemon Pokemon { get; set; }
 
     private void Awake()
     {
@@ -47,12 +33,17 @@ public class BattleUnit : MonoBehaviour
         else
             image.sprite = Pokemon.Base.FrontSprite;
 
+        hud.gameObject.SetActive(true);
         hud.SetData(pokemon);
 
         image.color = originalColor;
 
         PlayEnterAnimation();
+    }
 
+    public void Clear()
+    {
+        hud.gameObject.SetActive(false);
     }
 
     public void PlayEnterAnimation()
@@ -75,7 +66,6 @@ public class BattleUnit : MonoBehaviour
             sequence.Append(image.transform.DOLocalMoveX(originalPos.x - 50f, 0.25f));
 
         sequence.Append(image.transform.DOLocalMoveX(originalPos.x, 0.25f));
-
     }
 
     public void PlayHitAnimation()
