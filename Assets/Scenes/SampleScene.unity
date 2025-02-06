@@ -1196,7 +1196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 141785861}
   enemyUnit: {fileID: 1867368396}
-  BattleDialogBox: {fileID: 2094532689}
+  battleDialogBox: {fileID: 2094532689}
   partyScreen: {fileID: 1391928627}
   playerImage: {fileID: 2133059555}
   trainerImage: {fileID: 1979650456}

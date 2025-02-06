@@ -1,135 +1,76 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Move", menuName = "Pokemon/Create new move")]
 public class MoveBase : ScriptableObject
 {
-    [SerializeField] string name;
+    [SerializeField] private string name;
 
-    [TextArea]
-    [SerializeField ] string description;
+    [TextArea] [SerializeField] private string description;
 
-    [SerializeField] PokemonType type;
-    [SerializeField] int power;
-    [SerializeField] int accuracy;
-    [SerializeField] bool alwaysHits;
-    [SerializeField] int pp;
-    [SerializeField] int priority;
-    [SerializeField] MoveCategory category;
-    [SerializeField] MoveEffects effects;
-    [SerializeField] List<SecondaryEffects> secondaryEffects;
-    [SerializeField] MoveTarget target;
+    [SerializeField] private PokemonType type;
+    [SerializeField] private int power;
+    [SerializeField] private int accuracy;
+    [SerializeField] private bool alwaysHits;
+    [SerializeField] private int pp;
+    [SerializeField] private int priority;
+    [SerializeField] private MoveCategory category;
+    [SerializeField] private MoveEffects effects;
+    [SerializeField] private List<SecondaryEffects> secondaryEffects;
+    [SerializeField] private MoveTarget target;
 
-    public string Name
-    {
-        get { return name; }
-    }
+    public string Name => name;
 
-    public string Description
-    {
-        get { return description; }
-    }
+    public string Description => description;
 
-    public PokemonType Type
-    {
-        get { return type; }
-    }
+    public PokemonType Type => type;
 
-    public int Power
-    {
-        get { return power; }
-    }
+    public int Power => power;
 
-    public int Accuracy
-    {
-        get { return accuracy; }
-    }
+    public int Accuracy => accuracy;
 
-    public bool AlwaysHits
-    {
-        get { return alwaysHits; }
-    }
+    public bool AlwaysHits => alwaysHits;
 
-    public int Pp
-    {
-        get { return pp; }
-    }
+    public int Pp => pp;
 
-    public int Priority
-    {
-        get { return priority; }
-    }
+    public int Priority => priority;
 
-    public MoveCategory Category
-    {
-        get { return category; }
-    }
+    public MoveCategory Category => category;
 
-    public MoveEffects Effects
-    {
-        get { return effects; }
-    }
-    public List<SecondaryEffects> SecondaryEffects
-    {
-        get { return secondaryEffects; }
-    }
-    public MoveTarget Target
-    {
-        get { return target; }
-    }
+    public MoveEffects Effects => effects;
+
+    public List<SecondaryEffects> SecondaryEffects => secondaryEffects;
+
+    public MoveTarget Target => target;
 }
 
 [Serializable]
 public class MoveEffects
 {
-    [SerializeField] List<StatBoost> boosts;
-    [SerializeField] ConditionID status;
-    [SerializeField] ConditionID volatileStatus;
+    [SerializeField] private List<StatBoost> boosts;
+    [SerializeField] private ConditionID status;
+    [SerializeField] private ConditionID volatileStatus;
 
-    public List<StatBoost> Boosts
-    {
-        get
-        {
-            return boosts;
-        }
-    }
+    public List<StatBoost> Boosts => boosts;
 
-    public ConditionID Status
-    {
-        get
-        {
-            return status;
-        }
-    }
+    public ConditionID Status => status;
 
-    public ConditionID VolatileStatus
-    {
-        get
-        {
-            return volatileStatus;
-        }
-    }
+    public ConditionID VolatileStatus => volatileStatus;
 }
+
 [Serializable]
 public class SecondaryEffects : MoveEffects
 {
-    [SerializeField] int chance;
-    [SerializeField] MoveTarget target;
+    [SerializeField] private int chance;
+    [SerializeField] private MoveTarget target;
 
-    public int Chance
-    {
-        get { return chance; }
-    }
+    public int Chance => chance;
 
-    public MoveTarget Target
-    {
-        get { return target; }
-    }
+    public MoveTarget Target => target;
 }
 
-    [Serializable]
+[Serializable]
 public class StatBoost
 {
     public Stat Stat;
