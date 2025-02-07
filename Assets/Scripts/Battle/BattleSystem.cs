@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -32,6 +33,8 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] private PartyScreen partyScreen;
     [SerializeField] private Image playerImage;
     [SerializeField] private Image trainerImage;
+    [SerializeField] private GameObject pokeball;
+
     private int _currentAction;
     private int _currentMember;
     private int _currentMove;
@@ -54,6 +57,9 @@ public class BattleSystem : MonoBehaviour
     {
         _playerParty = playerParty;
         _wildPokemon = wildPokemon;
+
+        _player = _playerParty.GetComponent<PlayerController>();
+
         StartCoroutine(SetupBattle());
     }
 
@@ -396,6 +402,8 @@ public class BattleSystem : MonoBehaviour
             HandleMoveSelection();
         else if (_state == BattleState.PokemonSelection) HandlePokemonSelection();
         else if (_state == BattleState.WillChangePokemon) HandleTrainerWillChangePokemon();
+
+        if (Input.GetKeyDown(KeyCode.T)) StartCoroutine(ThrowPokeball());
     }
 
     private void HandleTrainerWillChangePokemon()
@@ -595,5 +603,28 @@ public class BattleSystem : MonoBehaviour
         yield return battleDialogBox.TypeDialog($"{_trainer.TrainerName} sends out {nextPokemon.Base.Name}!");
 
         _state = BattleState.RunningTurn;
+    }
+
+    private IEnumerator ThrowPokeball()
+    {
+        _state = BattleState.Busy;
+
+        yield return battleDialogBox.TypeDialog($"{_player.PlayerName} used pokeball!");
+
+        var pokeballObject = Instantiate(pokeball, playerUnit.transform.position - new Vector3(2f, 0f),
+            Quaternion.identity);
+        var pokeballSprite = pokeballObject.GetComponent<SpriteRenderer>();
+
+        // Animations
+        yield return pokeballSprite.transform.DOJump(enemyUnit.transform.position + new Vector3(0, 2f), 2f, 1, 1f)
+            .WaitForCompletion();
+        yield return enemyUnit.PlayCaptureAnimation();
+        yield return pokeballSprite.transform.DOMoveY(enemyUnit.transform.position.y - 2.3f, .5f).WaitForCompletion();
+
+        for (var i = 0; i < 3; i++)
+        {
+            yield return new WaitForSeconds(0.5f);
+            yield return pokeballSprite.transform.DOPunchRotation(new Vector3(0, 0, 10f), 1f).WaitForCompletion();
+        }
     }
 }

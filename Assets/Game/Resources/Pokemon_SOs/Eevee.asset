@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f45e43633af6a5468143a67b5e9d682, type: 3}
+  m_Name: Eevee
+  m_EditorClassIdentifier: 
+  name: Eevee
+  description: 
+  frontSprite: {fileID: 21300000, guid: eac12b5e9a391ed4491e69f1a4320642, type: 3}
+  backSprite: {fileID: 21300000, guid: 46d29def75422c844b7fcc7a7f3c65a9, type: 3}
+  type1: 1
+  type2: 0
+  maxHP: 55
+  attack: 55
+  defense: 50
+  spAttack: 45
+  spDefense: 65
+  speed: 55
+  learnableMoves:
+  - moveBase: {fileID: 11400000, guid: f39d50b6d21ce6c46a73385afc164784, type: 2}
+    level: 1
+  - moveBase: {fileID: 11400000, guid: e76aa4579ffcc044b8cea261688a96c1, type: 2}
+    level: 1
+  - moveBase: {fileID: 11400000, guid: 38e0e0ae1743f344f81c0b4735c8009b, type: 2}
+    level: 5
+  - moveBase: {fileID: 11400000, guid: 9b496c3cb16f9ff48ae98ea0ee6ea977, type: 2}
+    level: 10

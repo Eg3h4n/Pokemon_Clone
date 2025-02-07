@@ -1356,6 +1356,7 @@ MonoBehaviour:
   partyScreen: {fileID: 1391928627}
   playerImage: {fileID: 2133059555}
   trainerImage: {fileID: 1979650456}
+  pokeball: {fileID: 6876052761490671435, guid: 3a534f4bdfd55a54390f99127d2687b6, type: 3}
 --- !u!1 &882960392
 GameObject:
   m_ObjectHideFlags: 0
@@ -11217,10 +11218,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: f4b67b5912efba44382c9e1b4caf752e, type: 2}
-    level: 13
-  - _base: {fileID: 11400000, guid: f4b67b5912efba44382c9e1b4caf752e, type: 2}
-    level: 13
+  - _base: {fileID: 11400000, guid: c2f94d914b1692b4fbf5df80cbd43e66, type: 2}
+    level: 10
+  - _base: {fileID: 11400000, guid: 0dfe93a2650b1984eb6eedf3d7ed93c5, type: 2}
+    level: 10
 --- !u!1 &1561840458
 GameObject:
   m_ObjectHideFlags: 0
@@ -12229,7 +12230,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -419463529
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1867368394
@@ -14522,5 +14523,5 @@ SceneRoots:
   - {fileID: 2029646149}
   - {fileID: 291618719}
   - {fileID: 1144430970}
-  - {fileID: 928662017}
   - {fileID: 952132212}
+  - {fileID: 928662017}
