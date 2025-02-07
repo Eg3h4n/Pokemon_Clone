@@ -12,6 +12,7 @@ public enum BattleState
     RunningTurn,
     Busy,
     PokemonSelection,
+    WillChangePokemon,
     BattleOver
 }
 
@@ -45,6 +46,7 @@ public class BattleSystem : MonoBehaviour
     private TrainerController _trainer;
     private PokemonParty _trainerParty;
     private Pokemon _wildPokemon;
+    private bool _willChangePokemonChoice = true;
 
     public event Action<bool> OnBattleOver;
 
@@ -143,6 +145,15 @@ public class BattleSystem : MonoBehaviour
         battleDialogBox.EnableActionSelector(false);
         battleDialogBox.EnableDialogText(false);
         battleDialogBox.EnableMoveSelector(true);
+    }
+
+    private IEnumerator TrainerWillChangePokemon(Pokemon newPokemon)
+    {
+        _state = BattleState.Busy;
+        yield return battleDialogBox.TypeDialog(
+            $"{_trainer.TrainerName} is about to use {newPokemon.Base.Name}. Do you want to change your pokemon?");
+        _state = BattleState.WillChangePokemon;
+        battleDialogBox.EnableChoiceBox(true);
     }
 
     private IEnumerator RunTurns(BattleAction playerAction)
@@ -299,6 +310,7 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(2f);
 
             CheckForBattleOver(sourceUnit);
+            yield return new WaitUntil(() => _state == BattleState.RunningTurn);
         }
     }
 
@@ -358,7 +370,7 @@ public class BattleSystem : MonoBehaviour
             {
                 var nextPokemon = _trainerParty.GetHealthyPokemon();
                 if (nextPokemon != null)
-                    StartCoroutine(SendNextTrainerPokemon(nextPokemon));
+                    StartCoroutine(TrainerWillChangePokemon(nextPokemon));
                 else
                     BattleOver(true);
             }
@@ -383,6 +395,34 @@ public class BattleSystem : MonoBehaviour
         else if (_state == BattleState.MoveSelection)
             HandleMoveSelection();
         else if (_state == BattleState.PokemonSelection) HandlePokemonSelection();
+        else if (_state == BattleState.WillChangePokemon) HandleTrainerWillChangePokemon();
+    }
+
+    private void HandleTrainerWillChangePokemon()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+            _willChangePokemonChoice = !_willChangePokemonChoice;
+
+        battleDialogBox.UpdateChoiceBox(_willChangePokemonChoice);
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            battleDialogBox.EnableChoiceBox(false);
+            if (_willChangePokemonChoice)
+            {
+                _prevState = BattleState.WillChangePokemon;
+                OpenPartyScreen();
+            }
+            else
+            {
+                StartCoroutine(SendNextTrainerPokemon());
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            battleDialogBox.EnableChoiceBox(false);
+            StartCoroutine(SendNextTrainerPokemon());
+        }
     }
 
     private void HandleActionSelection()
@@ -499,10 +539,25 @@ public class BattleSystem : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X))
         {
+            if (playerUnit.Pokemon.HP <= 0)
+            {
+                partyScreen.SetMessageText("You have to choose a pokemon to continue...");
+                return;
+            }
+
             partyScreen.gameObject.SetActive(false);
-            ActionSelection();
+            if (_prevState == BattleState.WillChangePokemon)
+            {
+                _prevState = null;
+                StartCoroutine(SendNextTrainerPokemon());
+            }
+            else
+            {
+                ActionSelection();
+            }
         }
     }
+
 
     private IEnumerator SwitchPokemon(Pokemon newPokemon)
     {
@@ -519,13 +574,23 @@ public class BattleSystem : MonoBehaviour
 
         yield return battleDialogBox.TypeDialog($"Go {newPokemon.Base.Name}!");
 
-        _state = BattleState.RunningTurn;
+        switch (_prevState)
+        {
+            case null:
+                _state = BattleState.RunningTurn;
+                break;
+            case BattleState.WillChangePokemon:
+                _prevState = null;
+                StartCoroutine(SendNextTrainerPokemon());
+                break;
+        }
     }
 
-    private IEnumerator SendNextTrainerPokemon(Pokemon nextPokemon)
+    private IEnumerator SendNextTrainerPokemon()
     {
         _state = BattleState.Busy;
 
+        var nextPokemon = _trainerParty.GetHealthyPokemon();
         enemyUnit.Setup(nextPokemon);
         yield return battleDialogBox.TypeDialog($"{_trainer.TrainerName} sends out {nextPokemon.Base.Name}!");
 

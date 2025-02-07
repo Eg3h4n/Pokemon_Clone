@@ -1,15 +1,17 @@
 using System.Collections;
 using UnityEngine;
 
-public class TrainerController : MonoBehaviour
+public class TrainerController : MonoBehaviour, IInteractable
 {
     [SerializeField] private string trainerName;
     [SerializeField] private Sprite trainerSprite;
     [SerializeField] private Dialog dialog;
+    [SerializeField] private Dialog dialogAfterBattle;
     [SerializeField] private GameObject exclamationMark;
     [SerializeField] private GameObject fov;
 
     private Character _character;
+    private bool _isDefeated;
 
     public string TrainerName => trainerName;
     public Sprite TrainerSprite => trainerSprite;
@@ -22,6 +24,23 @@ public class TrainerController : MonoBehaviour
     private void Start()
     {
         SetFovRotation(_character.Animator.DefaultDirection);
+    }
+
+    private void Update()
+    {
+        _character.HandleUpdate();
+    }
+
+    public void Interact(Transform initiator)
+    {
+        _character.LookTowards(initiator.position);
+
+        if (!_isDefeated)
+            // Starts dialog
+            StartCoroutine(DialogManager.Instance.ShowDialog(dialog,
+                () => { GameController.Instance.StartTrainerBattle(this); }));
+        else
+            StartCoroutine(DialogManager.Instance.ShowDialog(dialogAfterBattle));
     }
 
     public IEnumerator TriggerTrainerBattle(PlayerController player)
@@ -39,6 +58,12 @@ public class TrainerController : MonoBehaviour
         // Starts dialog
         StartCoroutine(DialogManager.Instance.ShowDialog(dialog,
             () => { GameController.Instance.StartTrainerBattle(this); }));
+    }
+
+    public void GotDefeated()
+    {
+        _isDefeated = true;
+        fov.gameObject.SetActive(false);
     }
 
     public void SetFovRotation(FacingDirection facingDirection)

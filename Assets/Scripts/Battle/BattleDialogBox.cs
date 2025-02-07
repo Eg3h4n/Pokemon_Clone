@@ -5,19 +5,22 @@ using UnityEngine.UI;
 
 public class BattleDialogBox : MonoBehaviour
 {
-    [SerializeField] Text dialogText;
-    [SerializeField] int lettersPerSecond;
-    [SerializeField] Color highlightedColor;
+    [SerializeField] private Text dialogText;
+    [SerializeField] private int lettersPerSecond;
+    [SerializeField] private Color highlightedColor;
 
-    [SerializeField] GameObject actionSelector;
-    [SerializeField] GameObject moveSelector;
-    [SerializeField] GameObject moveDetails;
+    [SerializeField] private GameObject actionSelector;
+    [SerializeField] private GameObject moveSelector;
+    [SerializeField] private GameObject moveDetails;
 
-    [SerializeField] List<Text> actionTextList;
-    [SerializeField] List<Text> moveTextList;
+    [SerializeField] private List<Text> actionTextList;
+    [SerializeField] private List<Text> moveTextList;
+    [SerializeField] private GameObject choiceBox;
 
-    [SerializeField] Text ppText;
-    [SerializeField] Text moveTypeText;
+    [SerializeField] private Text ppText;
+    [SerializeField] private Text moveTypeText;
+    [SerializeField] private Text yesText;
+    [SerializeField] private Text noText;
 
     public void SetDialog(string dialog)
     {
@@ -53,33 +56,46 @@ public class BattleDialogBox : MonoBehaviour
         moveDetails.SetActive(enabled);
     }
 
+    public void EnableChoiceBox(bool enabled)
+    {
+        choiceBox.SetActive(enabled);
+    }
+
     public void UpdateActionSelection(int selectedAction)
     {
-        for (int i = 0; i < actionTextList.Count; i++)
-        {
+        for (var i = 0; i < actionTextList.Count; i++)
             if (i == selectedAction)
                 actionTextList[i].color = highlightedColor;
             else
                 actionTextList[i].color = Color.black;
+    }
 
+    public void UpdateChoiceBox(bool yesSelected)
+    {
+        if (yesSelected)
+        {
+            yesText.color = highlightedColor;
+            noText.color = Color.black;
+        }
+        else
+        {
+            yesText.color = Color.black;
+            noText.color = highlightedColor;
         }
     }
 
     public void UpdateMoveSelection(int selectedMove, Move move)
     {
-        for (int i = 0; i < moveTextList.Count; i++)
-        {
+        for (var i = 0; i < moveTextList.Count; i++)
             if (i == selectedMove)
                 moveTextList[i].color = highlightedColor;
             else
                 moveTextList[i].color = Color.black;
 
-        }
-
         ppText.text = $"PP {move.PP}/{move.Base.Pp}";
         moveTypeText.text = move.Base.Type.ToString();
 
-        if(move.PP == 0)
+        if (move.PP == 0)
             ppText.color = Color.red;
         else
             ppText.color = Color.black;
@@ -87,13 +103,10 @@ public class BattleDialogBox : MonoBehaviour
 
     public void SetMoveNames(List<Move> moves)
     {
-        for(int i = 0;i < moveTextList.Count; i++)
-        {
-            if(i < moves.Count)
+        for (var i = 0; i < moveTextList.Count; i++)
+            if (i < moves.Count)
                 moveTextList[i].text = moves[i].Base.Name;
             else
                 moveTextList[i].text = "-";
-
-        }
     }
 }
