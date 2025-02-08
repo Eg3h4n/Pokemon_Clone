@@ -1,112 +1,57 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Pokemon", menuName = "Pokemon/Create new Pokemon")]
 public class PokemonBase : ScriptableObject
 {
-    [SerializeField] string name;
+    [SerializeField] private string name;
 
-    [TextArea]
-    [SerializeField] string description;
+    [TextArea] [SerializeField] private string description;
 
-    [SerializeField] Sprite frontSprite;
-    [SerializeField] Sprite backSprite;
+    [SerializeField] private Sprite frontSprite;
+    [SerializeField] private Sprite backSprite;
 
-    [SerializeField] PokemonType type1;
-    [SerializeField] PokemonType type2;
+    [SerializeField] private PokemonType type1;
+    [SerializeField] private PokemonType type2;
 
     // Base Stats
-    [SerializeField] int maxHP;
-    [SerializeField] int attack;
-    [SerializeField] int defense;
-    [SerializeField] int spAttack;
-    [SerializeField] int spDefense;
-    [SerializeField] int speed;
+    [SerializeField] private int maxHP;
+    [SerializeField] private int attack;
+    [SerializeField] private int defense;
+    [SerializeField] private int spAttack;
+    [SerializeField] private int spDefense;
+    [SerializeField] private int speed;
+    [SerializeField] private int catchRate;
 
-    [SerializeField] List<LearnableMove> learnableMoves;
+    [SerializeField] private List<LearnableMove> learnableMoves;
 
-    public string Name
-    {
-        get { return name; }
-    }
+    public string Name => name;
+    public string Description => description;
+    public Sprite FrontSprite => frontSprite;
+    public Sprite BackSprite => backSprite;
+    public PokemonType Type1 => type1;
+    public PokemonType Type2 => type2;
+    public int MaxHP => maxHP;
+    public int Attack => attack;
+    public int Defense => defense;
+    public int SpAttack => spAttack;
+    public int SpDefense => spDefense;
+    public int Speed => speed;
+    public int CatchRate => catchRate;
 
-    public string Description
-    {
-        get { return description; }
-    }
-
-    public Sprite FrontSprite
-    {
-        get { return frontSprite; }
-    }
-
-    public Sprite BackSprite
-    {
-        get { return backSprite; }
-    }
-
-    public PokemonType Type1
-    {
-        get { return type1; }
-    }
-
-    public PokemonType Type2
-    {
-        get { return type2; }
-    }
-
-    public int MaxHP
-    {
-        get { return maxHP; }
-    }
-
-    public int Attack
-    {
-        get { return attack; }
-    }
-
-    public int Defense
-    {
-        get { return defense; }
-    }
-
-    public int SpAttack
-    {
-        get { return spAttack; }
-    }
-
-    public int SpDefense
-    {
-        get { return spDefense; }
-    }
-
-    public int Speed
-    {
-        get { return speed; }
-    }
-
-    public List<LearnableMove> LearnableMoves
-    {
-        get { return learnableMoves; }
-    }
+    public List<LearnableMove> LearnableMoves => learnableMoves;
 }
 
-[System.Serializable]
+[Serializable]
 public class LearnableMove
 {
-    [SerializeField] MoveBase moveBase;
-    [SerializeField] int level;
+    [SerializeField] private MoveBase moveBase;
+    [SerializeField] private int level;
 
-    public MoveBase Base
-    {
-        get { return moveBase; }
-    }
+    public MoveBase Base => moveBase;
 
-    public int Level
-    {
-        get { return level; }
-    }
+    public int Level => level;
 }
 
 public enum PokemonType
@@ -139,6 +84,7 @@ public enum Stat
     SpAttack,
     SpDefense,
     Speed,
+
     //These 2 are not actual stats, they are used for move accuracy
     Accurracy,
     Evasion
@@ -146,27 +92,27 @@ public enum Stat
 
 public class TypeChart
 {
-    static float[][] chart =
+    private static readonly float[][] chart =
     {
-        //                       Nor   Fir   Wat   Ele   Gra   Ice   Fig   Poi   Gro   Fly   Psy   Bug   Roc   Gho   Dra   Dar  Ste    Fai
-        /*Normal*/  new float[] {1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   0.5f, 0,    1f,   1f,   0.5f, 1f},
-        /*Fire*/    new float[] {1f,   0.5f, 0.5f, 1f,   2f,   2f,   1f,   1f,   1f,   1f,   1f,   2f,   0.5f, 1f,   0.5f, 1f,   2f,   1f},
-        /*Water*/   new float[] {1f,   2f,   0.5f, 1f,   0.5f, 1f,   1f,   1f,   2f,   1f,   1f,   1f,   2f,   1f,   0.5f, 1f,   1f,   1f},
-        /*Electric*/new float[] {1f,   1f,   2f,   0.5f, 0.5f, 1f,   1f,   1f,   0f,   2f,   1f,   1f,   1f,   1f,   0.5f, 1f,   1f,   1f},
-        /*Grass*/   new float[] {1f,   0.5f, 2f,   1f,   0.5f, 1f,   1f,   0.5f, 2f,   0.5f, 1f,   0.5f, 2f,   1f,   0.5f, 1f,   0.5f, 1f},
-        /*Ice*/     new float[] {1f,   0.5f, 0.5f, 1f,   2f,   0.5f, 1f,   1f,   2f,   2f,   1f,   1f,   1f,   1f,   2f,   1f,   0.5f, 1f},
-        /*Fighting*/new float[] {2f,   1f,   1f,   1f,   1f,   2f,   1f,   0.5f, 1f,   0.5f, 0.5f, 0.5f, 2f,   0f,   1f,   2f,   2f,   0.5f},
-        /*Poison*/  new float[] {1f,   1f,   1f,   1f,   2f,   1f,   1f,   0.5f, 0.5f, 1f,   1f,   1f,   0.5f, 0.5f, 1f,   1f,   0f,   2f},
-        /*Ground*/  new float[] {1f,   2f,   1f,   2f,   0.5f, 1f,   1f,   2f,   1f,   0f,   1f,   0.5f, 2f,   1f,   1f,   1f,   2f,   1f},
-        /*Flying*/  new float[] {1f,   1f,   1f,   0.5f, 2f,   1f,   2f,   1f,   1f,   1f,   1f,   2f,   0.5f, 1f,   1f,   1f,   0.5f, 1f},
-        /*Psychic*/ new float[] {1f,   1f,   1f,   1f,   1f,   1f,   2f,   2f,   1f,   1f,   0.5f, 1f,   1f,   1f,   1f,   0f,   0.5f, 1f},
-        /*Bug*/     new float[] {1f,   0.5f, 1f,   1f,   2f,   1f,   0.5f, 0.5f, 1f,   0.5f, 2f,   1f,   1f,   0.5f, 1f,   2f,   0.5f, 0.5f},
-        /*Rock*/    new float[] {1f,   2f,   1f,   1f,   1f,   2f,   0.5f, 1f,   0.5f, 2f,   1f,   2f,   1f,   1f,   1f,   1f,   0.5f, 1f},
-        /*Ghost*/   new float[] {0f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   0.5f, 1f,   1f,   2f,   1f,   0.5f, 1f,   1f},
-        /*Dragon*/  new float[] {1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   2f,   1f,   0.5f, 0f},
-        /*Dark*/    new float[] {1f,   1f,   1f,   1f,   1f,   1f,   0.5f, 1f,   1f,   1f,   2f,   1f,   1f,   2f,   1f,   0.5f, 1f,   0.5f},
-        /*Steel*/   new float[] {1f,   0.5f, 0.5f, 0.5f, 1f,   2f,   1f,   1f,   1f,   1f,   1f,   2f,   0.5f, 1f,   1f,   1f,   0.5f, 2f},
-        /*Fairy*/   new float[] {1f,   0.5f, 1f,   1f,   1f,   1f,   2f,   0.5f, 1f,   1f,   1f,   1f,   1f,   1f,   2f,   2f,   0.5f, 1f},
+        //                Nor  Fir  Wat   Ele   Gra   Ice   Fig   Poi   Gro   Fly   Psy   Bug   Roc   Gho   Dra   Dar  Ste    Fai
+        /*Normal*/ new[] { 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 0.5f, 0, 1f, 1f, 0.5f, 1f },
+        /*Fire*/ new[] { 1f, 0.5f, 0.5f, 1f, 2f, 2f, 1f, 1f, 1f, 1f, 1f, 2f, 0.5f, 1f, 0.5f, 1f, 2f, 1f },
+        /*Water*/ new[] { 1f, 2f, 0.5f, 1f, 0.5f, 1f, 1f, 1f, 2f, 1f, 1f, 1f, 2f, 1f, 0.5f, 1f, 1f, 1f },
+        /*Electric*/new[] { 1f, 1f, 2f, 0.5f, 0.5f, 1f, 1f, 1f, 0f, 2f, 1f, 1f, 1f, 1f, 0.5f, 1f, 1f, 1f },
+        /*Grass*/ new[] { 1f, 0.5f, 2f, 1f, 0.5f, 1f, 1f, 0.5f, 2f, 0.5f, 1f, 0.5f, 2f, 1f, 0.5f, 1f, 0.5f, 1f },
+        /*Ice*/ new[] { 1f, 0.5f, 0.5f, 1f, 2f, 0.5f, 1f, 1f, 2f, 2f, 1f, 1f, 1f, 1f, 2f, 1f, 0.5f, 1f },
+        /*Fighting*/new[] { 2f, 1f, 1f, 1f, 1f, 2f, 1f, 0.5f, 1f, 0.5f, 0.5f, 0.5f, 2f, 0f, 1f, 2f, 2f, 0.5f },
+        /*Poison*/ new[] { 1f, 1f, 1f, 1f, 2f, 1f, 1f, 0.5f, 0.5f, 1f, 1f, 1f, 0.5f, 0.5f, 1f, 1f, 0f, 2f },
+        /*Ground*/ new[] { 1f, 2f, 1f, 2f, 0.5f, 1f, 1f, 2f, 1f, 0f, 1f, 0.5f, 2f, 1f, 1f, 1f, 2f, 1f },
+        /*Flying*/ new[] { 1f, 1f, 1f, 0.5f, 2f, 1f, 2f, 1f, 1f, 1f, 1f, 2f, 0.5f, 1f, 1f, 1f, 0.5f, 1f },
+        /*Psychic*/ new[] { 1f, 1f, 1f, 1f, 1f, 1f, 2f, 2f, 1f, 1f, 0.5f, 1f, 1f, 1f, 1f, 0f, 0.5f, 1f },
+        /*Bug*/ new[] { 1f, 0.5f, 1f, 1f, 2f, 1f, 0.5f, 0.5f, 1f, 0.5f, 2f, 1f, 1f, 0.5f, 1f, 2f, 0.5f, 0.5f },
+        /*Rock*/ new[] { 1f, 2f, 1f, 1f, 1f, 2f, 0.5f, 1f, 0.5f, 2f, 1f, 2f, 1f, 1f, 1f, 1f, 0.5f, 1f },
+        /*Ghost*/ new[] { 0f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 0.5f, 1f, 1f, 2f, 1f, 0.5f, 1f, 1f },
+        /*Dragon*/ new[] { 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 2f, 1f, 0.5f, 0f },
+        /*Dark*/ new[] { 1f, 1f, 1f, 1f, 1f, 1f, 0.5f, 1f, 1f, 1f, 2f, 1f, 1f, 2f, 1f, 0.5f, 1f, 0.5f },
+        /*Steel*/ new[] { 1f, 0.5f, 0.5f, 0.5f, 1f, 2f, 1f, 1f, 1f, 1f, 1f, 2f, 0.5f, 1f, 1f, 1f, 0.5f, 2f },
+        /*Fairy*/ new[] { 1f, 0.5f, 1f, 1f, 1f, 1f, 2f, 0.5f, 1f, 1f, 1f, 1f, 1f, 1f, 2f, 2f, 0.5f, 1f }
     };
 
     public static float GetEffectiveness(PokemonType attackType, PokemonType defenseType)
@@ -174,8 +120,8 @@ public class TypeChart
         if (attackType == PokemonType.None || defenseType == PokemonType.None)
             return 1f;
 
-        int row = (int)attackType - 1;
-        int col = (int)defenseType - 1;
+        var row = (int)attackType - 1;
+        var col = (int)defenseType - 1;
 
         return chart[row][col];
     }

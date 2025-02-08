@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f45e43633af6a5468143a67b5e9d682, type: 3}
   m_Name: Vulpix
   m_EditorClassIdentifier: 
-  name: 
+  name: Vulpix
   description: 
   frontSprite: {fileID: 21300000, guid: e5b15660180fda9478729d05c22402bd, type: 3}
   backSprite: {fileID: 21300000, guid: c22a6b46227fd1a4abc7a5e847a5daf9, type: 3}
@@ -24,6 +24,7 @@ MonoBehaviour:
   spAttack: 50
   spDefense: 65
   speed: 65
+  catchRate: 190
   learnableMoves:
   - moveBase: {fileID: 11400000, guid: 93c589e2586fd6941bc465cef2be4ceb, type: 2}
     level: 1

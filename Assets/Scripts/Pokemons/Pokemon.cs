@@ -1,33 +1,30 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-[System.Serializable]
+[Serializable]
 public class Pokemon
 {
-    [SerializeField] PokemonBase _base;
-    [SerializeField] int level;
+    [SerializeField] private PokemonBase _base;
+    [SerializeField] private int level;
 
-    public PokemonBase Base { 
-        get 
-        { 
-        return _base;
-        } 
-    }
-
-    public int Level
+    public Pokemon(PokemonBase pokemonBase, int level)
     {
-        get
-        {
-            return level;
-        }
+        _base = pokemonBase;
+        this.level = level;
+
+        Init();
     }
 
-    public int HP {  get; set; }
+    public PokemonBase Base => _base;
 
-    public List<Move> Moves {  get; set; }
+    public int Level => level;
+
+    public int HP { get; set; }
+
+    public List<Move> Moves { get; set; }
     public Move CurrentMove { get; set; }
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> StatBoosts { get; private set; }
@@ -35,26 +32,39 @@ public class Pokemon
     public Condition VolatileStatus { get; private set; }
     public int StatusTime { get; set; }
     public int VolatileStatusTime { get; set; }
-    public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
+    public Queue<string> StatusChanges { get; private set; } = new();
     public bool HPChanged { get; set; }
-    public event System.Action OnStatusChanged;
+
+    public int Attack => GetStat(Stat.Attack);
+
+    public int Defense => GetStat(Stat.Defense);
+
+    public int SpAttack => GetStat(Stat.SpAttack);
+
+    public int SpDefense => GetStat(Stat.SpDefense);
+
+    public int Speed => GetStat(Stat.Speed);
+
+    public int MaxHP { get; private set; }
+
+    public event Action OnStatusChanged;
 
     public void Init()
     {
-
         Moves = new List<Move>();
-        foreach (LearnableMove move in Base.LearnableMoves)
+        foreach (var move in Base.LearnableMoves)
         {
             if (move.Level <= Level)
                 Moves.Add(new Move(move.Base));
 
-            if(Moves.Count >= 4)
+            if (Moves.Count >= 4)
                 break;
         }
 
         CalculateStats();
         HP = MaxHP;
 
+        StatusChanges = new Queue<string>();
         ResetStatBoost();
         Status = null;
         VolatileStatus = null;
@@ -64,39 +74,39 @@ public class Pokemon
     {
         Stats = new Dictionary<Stat, int>
         {
-            { Stat.Attack, Mathf.FloorToInt((Base.Attack * Level) / 100f) + 5 },
-            { Stat.Defense, Mathf.FloorToInt((Base.Defense * Level) / 100f) + 5 },
-            { Stat.SpAttack, Mathf.FloorToInt((Base.SpAttack * Level) / 100f) + 5 },
-            { Stat.SpDefense, Mathf.FloorToInt((Base.SpDefense * Level) / 100f) + 5 },
-            { Stat.Speed, Mathf.FloorToInt((Base.Speed * Level) / 100f) + 5 },
+            { Stat.Attack, Mathf.FloorToInt(Base.Attack * Level / 100f) + 5 },
+            { Stat.Defense, Mathf.FloorToInt(Base.Defense * Level / 100f) + 5 },
+            { Stat.SpAttack, Mathf.FloorToInt(Base.SpAttack * Level / 100f) + 5 },
+            { Stat.SpDefense, Mathf.FloorToInt(Base.SpDefense * Level / 100f) + 5 },
+            { Stat.Speed, Mathf.FloorToInt(Base.Speed * Level / 100f) + 5 }
         };
 
-        MaxHP = Mathf.FloorToInt((Base.MaxHP * Level) / 100f) + 10 + Level;
+        MaxHP = Mathf.FloorToInt(Base.MaxHP * Level / 100f) + 10 + Level;
     }
 
     private void ResetStatBoost()
     {
-        StatBoosts = new Dictionary<Stat, int>()
+        StatBoosts = new Dictionary<Stat, int>
         {
-            {Stat.Attack, 0 },
-            {Stat.Defense, 0},
-            {Stat.SpAttack, 0},
-            {Stat.SpDefense, 0},
-            {Stat.Speed, 0},
-            {Stat.Accurracy, 0},
-            {Stat.Evasion, 0},
+            { Stat.Attack, 0 },
+            { Stat.Defense, 0 },
+            { Stat.SpAttack, 0 },
+            { Stat.SpDefense, 0 },
+            { Stat.Speed, 0 },
+            { Stat.Accurracy, 0 },
+            { Stat.Evasion, 0 }
         };
     }
 
     private int GetStat(Stat stat)
     {
-        int statVal = Stats[stat];
+        var statVal = Stats[stat];
 
         // TODO: Stat boost magic
-        int boost = StatBoosts[stat];
-        var boostValues = new float[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
+        var boost = StatBoosts[stat];
+        var boostValues = new[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
 
-        if(boost >= 0)
+        if (boost >= 0)
             statVal = Mathf.FloorToInt(statVal * boostValues[boost]);
         else
             statVal = Mathf.FloorToInt(statVal / boostValues[-boost]);
@@ -122,59 +132,29 @@ public class Pokemon
         }
     }
 
-    public int Attack
-    {
-        get { return GetStat(Stat.Attack); }
-    }
-
-    public int Defense
-    {
-        get { return GetStat(Stat.Defense); }
-    }
-
-    public int SpAttack
-    {
-        get { return GetStat(Stat.SpAttack); }
-    }
-
-    public int SpDefense
-    {
-        get { return GetStat(Stat.SpDefense); }
-    }
-
-    public int Speed
-    {
-        get { return GetStat(Stat.Speed); }
-    }
-
-    public int MaxHP
-    {
-        get;
-        private set;
-    }
-
     public DamageDetails TakeDamage(Move move, Pokemon attacker)
     {
-        float critical = 1f;
+        var critical = 1f;
         if (Random.value * 100f <= 6.25)
             critical = 2f;
 
-        float type = TypeChart.GetEffectiveness(move.Base.Type, Base.Type1) * TypeChart.GetEffectiveness(move.Base.Type, Base.Type2);
+        var type = TypeChart.GetEffectiveness(move.Base.Type, Base.Type1) *
+                   TypeChart.GetEffectiveness(move.Base.Type, Base.Type2);
 
-        var damageDetails = new DamageDetails()
+        var damageDetails = new DamageDetails
         {
             TypeEffectiveness = type,
             Critical = critical,
             Fainted = false
         };
 
-        float attack =  move.Base.Category == MoveCategory.Special ? attacker.SpAttack : attacker.Attack;
-        float defense =  move.Base.Category == MoveCategory.Special ? SpDefense: Defense;
+        float attack = move.Base.Category == MoveCategory.Special ? attacker.SpAttack : attacker.Attack;
+        float defense = move.Base.Category == MoveCategory.Special ? SpDefense : Defense;
 
-        float modifiers = Random.Range(0.85f, 1f) * type * critical;
-        float a = (2 * attacker.Level + 10) / 250f;
-        float d = a * move.Base.Power * ((float)attack / defense) + 2;
-        int damage = Mathf.FloorToInt(d * modifiers);
+        var modifiers = Random.Range(0.85f, 1f) * type * critical;
+        var a = (2 * attacker.Level + 10) / 250f;
+        var d = a * move.Base.Power * (attack / defense) + 2;
+        var damage = Mathf.FloorToInt(d * modifiers);
 
         UpdateHP(damage);
 
@@ -196,7 +176,7 @@ public class Pokemon
         StatusChanges.Enqueue($"{Base.Name} {Status.StartMessage}");
         OnStatusChanged?.Invoke();
     }
-    
+
     public void SetVolatileStatus(ConditionID conditionId)
     {
         if (VolatileStatus != null) return;
@@ -221,25 +201,21 @@ public class Pokemon
     {
         var movesWithPP = Moves.Where(x => x.PP > 0).ToList();
 
-        int r = Random.Range(0, movesWithPP.Count);
+        var r = Random.Range(0, movesWithPP.Count);
         return movesWithPP[r];
     }
 
     public bool OnBeforeMove()
     {
-        bool canPerformMove = true;
+        var canPerformMove = true;
 
-        if(Status?.OnBeforeMove != null)
-        {
-            if(!Status.OnBeforeMove(this))
+        if (Status?.OnBeforeMove != null)
+            if (!Status.OnBeforeMove(this))
                 canPerformMove = false;
-        }
 
-        if(VolatileStatus?.OnBeforeMove != null)
-        {
-            if(!VolatileStatus.OnBeforeMove(this))
+        if (VolatileStatus?.OnBeforeMove != null)
+            if (!VolatileStatus.OnBeforeMove(this))
                 canPerformMove = false;
-        }
 
         return canPerformMove;
     }
@@ -262,5 +238,4 @@ public class DamageDetails
     public bool Fainted { get; set; }
     public float Critical { get; set; }
     public float TypeEffectiveness { get; set; }
-
 }
