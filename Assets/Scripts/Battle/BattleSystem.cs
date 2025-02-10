@@ -39,6 +39,8 @@ public class BattleSystem : MonoBehaviour
     private int _currentMember;
     private int _currentMove;
 
+    private int _escapeAttempts;
+
     private bool _isTrainerBattle;
     private PlayerController _player;
 
@@ -118,6 +120,7 @@ public class BattleSystem : MonoBehaviour
             yield return battleDialogBox.TypeDialog($"A wild {enemyUnit.Pokemon.Base.Name} appeared.");
         }
 
+        _escapeAttempts = 0;
         partyScreen.Init();
 
 
@@ -211,6 +214,10 @@ public class BattleSystem : MonoBehaviour
             {
                 battleDialogBox.EnableActionSelector(false);
                 yield return ThrowPokeball();
+            }
+            else if (playerAction == BattleAction.Run)
+            {
+                yield return TryToEscape();
             }
 
             // Enemy Turn
@@ -473,6 +480,7 @@ public class BattleSystem : MonoBehaviour
             else if (_currentAction == 3)
             {
                 // Run
+                StartCoroutine(RunTurns(BattleAction.Run));
             }
         }
     }
@@ -689,5 +697,44 @@ public class BattleSystem : MonoBehaviour
         }
 
         return shakeCount;
+    }
+
+    private IEnumerator TryToEscape()
+    {
+        _state = BattleState.Busy;
+
+        if (_isTrainerBattle)
+        {
+            yield return battleDialogBox.TypeDialog("You can't escape the trainer!");
+            _state = BattleState.RunningTurn;
+            yield break;
+        }
+
+        ++_escapeAttempts;
+
+        var playerSpeed = playerUnit.Pokemon.Speed;
+        var enemySpeed = enemyUnit.Pokemon.Speed;
+
+        if (enemySpeed < playerSpeed)
+        {
+            yield return battleDialogBox.TypeDialog("Ran away safely.");
+            BattleOver(true);
+        }
+        else
+        {
+            float f = playerSpeed * 128 / enemySpeed + 30 * _escapeAttempts;
+            f = f % 256;
+
+            if (Random.Range(0, 256) < f)
+            {
+                yield return battleDialogBox.TypeDialog("Ran away safely.");
+                BattleOver(true);
+            }
+            else
+            {
+                yield return battleDialogBox.TypeDialog("Couldn't escape!");
+                _state = BattleState.RunningTurn;
+            }
+        }
     }
 }
