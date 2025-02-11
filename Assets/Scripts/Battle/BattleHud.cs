@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class BattleHud : MonoBehaviour
 {
-    [SerializeField] Text nameText;
-    [SerializeField] Text levelText;
-    [SerializeField] Text statusText;
-    [SerializeField] HPBar hpBar;
+    [SerializeField] private Text nameText;
+    [SerializeField] private Text levelText;
+    [SerializeField] private Text statusText;
+    [SerializeField] private HPBar hpBar;
 
-    [SerializeField] Color psnColor;
-    [SerializeField] Color brnColor;
-    [SerializeField] Color slpColor;
-    [SerializeField] Color parColor;
-    [SerializeField] Color frzColor;
+    [SerializeField] private Color psnColor;
+    [SerializeField] private Color brnColor;
+    [SerializeField] private Color slpColor;
+    [SerializeField] private Color parColor;
+    [SerializeField] private Color frzColor;
 
-    Pokemon _pokemon;
-    Dictionary<ConditionID, Color> statusColors;
+    private Pokemon _pokemon;
+    private Dictionary<ConditionID, Color> statusColors;
 
     public void SetData(Pokemon pokemon)
     {
@@ -26,13 +26,13 @@ public class BattleHud : MonoBehaviour
         levelText.text = $"Lvl {pokemon.Level}";
         hpBar.SetHP((float)pokemon.HP / pokemon.MaxHP);
 
-        statusColors = new Dictionary<ConditionID, Color>()
+        statusColors = new Dictionary<ConditionID, Color>
         {
-            {ConditionID.psn, psnColor},
-            {ConditionID.brn, brnColor},
-            {ConditionID.slp, slpColor},
-            {ConditionID.par, parColor},
-            {ConditionID.frz, frzColor},
+            { ConditionID.psn, psnColor },
+            { ConditionID.brn, brnColor },
+            { ConditionID.slp, slpColor },
+            { ConditionID.par, parColor },
+            { ConditionID.frz, frzColor }
         };
 
         SetStatusText();
@@ -41,14 +41,15 @@ public class BattleHud : MonoBehaviour
 
     private void SetStatusText()
     {
-        if(_pokemon.Status == null)
+        if (_pokemon.Status == null)
+        {
             statusText.text = string.Empty;
+        }
         else
         {
             statusText.text = _pokemon.Status.Id.ToString().ToUpper();
             statusText.color = statusColors[_pokemon.Status.Id];
         }
-
     }
 
     public IEnumerator UpdateHP()
